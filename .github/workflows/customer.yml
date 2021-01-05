@@ -12,12 +12,12 @@ name: Build and push customer Docker image
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'java/quarkus/*'
       - '.github/workflows/customer.yml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths: 
       - 'java/quarkus/*'
   #watch:
