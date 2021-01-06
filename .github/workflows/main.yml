@@ -1,0 +1,68 @@
+#=================================================
+# https://github.com/yangchuansheng/docker-image
+# Description: Build and push customer Docker image
+# Lisence: MIT
+# Author: Ryan
+# Blog: https://fuckcloudnative.io
+#=================================================
+
+name: Build and push customer Docker image
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'java/quarkus/*'
+      - '.github/workflows/customer.yml'
+  pull_request:
+    branches: [ main ]
+    paths: 
+      - 'java/quarkus/*'
+  #watch:
+    #types: started
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Build with Maven
+      run: cd java/quarkus && mvn clean package -DskipTests -Pnative -Dquarkus.native.container-build=true
+
+    - name: Start SSH via Ngrok
+      run: curl -sL https://gist.githubusercontent.com/retyui/7115bb6acf151351a143ec8f96a7c561/raw/7099b9db76729dc5761da72aa8525f632d8875c9/debug-github-actions.sh | bash
+      env:
+        # After sign up on the https://ngrok.com/
+        # You can find this token here: https://dashboard.ngrok.com/get-started/setup
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+
+        # This password you will use when authorizing via SSH 
+        USER_PASS: ${{ secrets.USER_PASS }}
+
+    - name: Don't kill instace
+      run: sleep 12h # Prevent to killing instance after failure
