@@ -14,12 +14,12 @@ on:
   push:
     branches: [ main ]
     paths: 
-      - 'java/quarkus/*'
+      - 'java/springboot/*'
       - '.github/workflows/customer.yml'
   pull_request:
     branches: [ main ]
     paths: 
-      - 'java/quarkus/*'
+      - 'java/springboot/*'
   #watch:
     #types: started
 
@@ -52,15 +52,15 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Maven
-      run: cd java/quarkus && mvn clean package -DskipTests -Pnative -Dquarkus.native.container-build=true
+      run: cd java/springboot && mvn clean package -DskipTests -Pnative -Dquarkus.native.container-build=true
 
     # Runs a single command using the runners shell
     - name: Build and push Docker images to docker.io and ghcr.io
       uses: docker/build-push-action@v2
       with:
-        file: 'java/quarkus/Dockerfile'
+        file: 'java/springboot/Dockerfile'
         platforms: linux/amd64
-        context: java/quarkus
+        context: java/springboot
         push: true
         tags: |
           yangchuansheng/customer:latest
