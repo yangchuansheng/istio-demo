@@ -15,7 +15,7 @@ on:
     branches: [ main ]
     paths: 
       - 'java/quarkus/*'
-      - '.github/workflows/customer.yml'
+      - '.github/workflows/customer-ssh.yml'
   pull_request:
     branches: [ main ]
     paths: 
