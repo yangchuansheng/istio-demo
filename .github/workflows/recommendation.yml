@@ -63,7 +63,7 @@ jobs:
         context: recommendation/java/springboot
         push: true
         tags: |
-          yangchuansheng/recommendation:latest
+          yangchuansheng/recommendation:v1
 
     #- name: Update repo description
       #uses: peter-evans/dockerhub-description@v2
